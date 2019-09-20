@@ -1,0 +1,7 @@
+black
+folium
+geopandas
+ipython
+jupyter-contrib-nbextensions
+numpy
+pandas
