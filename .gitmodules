@@ -1,3 +1,6 @@
 [submodule "prototypes/pinochet"]
-	path = prototypes/pinochet
+	path = pinochet
+	url = https://github.com/danilofreire/pinochet
+[submodule "pinochet"]
+	path = pinochet
 	url = https://github.com/danilofreire/pinochet

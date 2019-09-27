@@ -1,0 +1,333 @@
+---
+title:  |
+        | **Data Codebook and Appendix for**
+        | **Deaths and Disappearances in the Pinochet Regime: A New Dataset**
+author: 
+  - "Danilo Freire[^df]"
+  - "John Meadowcroft[^jm]"
+  - "David Skarbek[^ds]"
+  - "Eugenia Guerrero[^eg]"
+date: \today
+thanks: "Replication materials and R source code are available at [`http://github.com/danilofreire/pinochet`](http://github.com/danilofreire/pinochet)."
+fontfamily: libertine
+fontawesome: yes
+fontsize: 12pt
+monospace-url: yes
+spacing: double
+papersize: a4paper
+bibliography: references.bib
+biblio-style: apalike
+output:
+  pdf_document:
+    citation_package: natbib
+    fig_caption: yes
+    toc: true
+    number_sections: yes
+    keep_tex: no
+    template: template.latex
+---
+
+\newpage
+
+# Introduction
+
+\setlength{\parindent}{0pt}
+
+This document contains the code necessary to replicate the results in "Deaths and Disappearances in the Pinochet Regime: A New Dataset" by @freire2019dataset. The data are available as the `pinochet` package for the `R` statistical language [@freire2019pinochet] and as an Excel spreadsheet at <http://github.com/danilofreire/pinochet>. 
+
+# Background
+
+The violent military coup in Chile in September 1973 resulted in over three decades of sustained violence, deaths, and forced disappearances as General Pinochet’s government fought against left-wing movements for the sake of the 'national wellbeing'. The fall of Pinochet’s regime and the traumatic consequences of his authoritarian government left Chile deeply divided. In order to move forward and avoid a repetition of the past, the Chilean government highlighted the need of an impartial and comprehensive report detailing the extent of the deaths and disappearances.
+
+By compiling and analysing the data from both volumes of the Report of the Chilean National Commission on Truth and Reconciliation, we seek to understand the logic and dynamics of the violence, deaths, and disappearances under Pinochet’s Chile.
+
+# Sources
+
+Report of the Chilean National Commission on Truth and Reconciliation, Vol. 1.
+
+Report of the Chilean National Commission on Truth and Reconciliation, Vol. 2.
+
+# Variables
+
+The dataset has 59 variables with information about the victims, the perpetrators, and geographical coordinates of each incident. We provide a brief description of each variable below. Here, we sorted them alphabetically.
+
+* `additional_comments`: This variable gives additional information about cases that are too ambiguous to fit precisely into a single category. For instance, when the Truth and Commission Report is unsure whether the victim was killed or committed suicide, or if a given human rights abuse may have occurred in Santiago or elsewhere. Only 10 cases have additional information.
+
+* `age`: Victim's age, in years. The variable ranges from 0.22 (about 4 months) to 85. The mean is 29.7 years.
+
+* `end_date_daily`: Day when the human rights abuse ended.
+
+* `end_date_monthly`: Not all instances of human rights abuses have exact dates. This variable indicates the month where the atrocity occurred, when this information is available. We used the first day of the month as a reference. 
+
+* `exact_coordinates_n`: We matched the event sites with coordinates of latitude and longitude. As the report does not have the precise location of all events, we used the closest reference available. This is a dummy variable stating whether coordinates are precise (street level) or not. 1 = yes. There are six variables in the dataset, each pertaining to one location where the individual was found or taken to. 
+
+* `first_name`: Victim's first name.
+
+* `group_id`: Unique identification number for groups of individuals attacked together.
+
+* `individual_id`: Unique individual identification number.
+
+* `interrogation`: Individual was interrogated, 1 = yes.
+
+* `last_name`: Victim's last name.
+
+* `latitude_n`: Latitudinal coordinates pertaining to the string `place_n` variable. 
+
+* `location_n`: Where the individual was seen or found. There are up to 6 locations, so we coded them as `location_1` to `location_6`. The same pattern repeats in the variables below. The compilation of the `location_n` variable was based completely on information given in the Truth Report. However, since this information was in a string format (e.g. intersection of Calle Grecia and Avenida Rosa), creating a new variable incorporating each location’s latitude and longitude was necessary to pursue further analysis of the trends in deaths and disappearances. The format chosen was decimal coordinates. Three main websites were used to find the decimal coordinates:
+  - Latitude: http://latitude.to/. We used Latitude for sourcing more inexact coordinates, such as the coordinates for cities or towns. We also used it to convert non-decimal coordinates into the decimal format.
+   - Wikimapia: http://wikimapia.org/. Wikimapia was mostly used for locating shantytowns, neighborhoods, military bases, or police stations that were not found on Google maps. Its strength is that it is an editable map, meaning that individual users can collaborate so as to produce a more comprehensive map (filled with local knowledge) than other standard maps such as Google maps.
+  - Google maps: http://maps.google.co.uk/. Google Maps was useful for finding intersections of roads or precise addresses, as well as for searching for police stations, some military bases, and other governmental buildings.
+
+* `longitude_n`: Longitudinal coordinates pertaining to the string `place_n` variable.
+
+* `male`: Victim is male, 1 = yes.
+
+* `method`: Method of violence used by the perpetrator. There are 25 categories. 
+
+* `minor`: Victim is a minor, 1 = yes.
+
+* `mistreatment`: Individual was mistreated by the government or the opposition, 1 = yes.
+
+* `nationality`: Individual's nationality. They are:
+  - Argentinean, Austrian, Bolivian, Brazilian, Chilean, Dual British and Chilean, Dual French and Chilean, Dual Swiss and Chilean, Ecuadorian, French, Mexican, Spanish, Uruguayan, Vietnamese
+
+* `number_previous_arrests`: Number of individual's previous arrests. 0 indicates that the individual was reported to the authorities and was allowed to go free (no arrest).
+
+* `occupation`: Victim occupation. We grouped all occupations into 10 categories:
+  - White collar, Blue collar, School student, University student, Military, Non-military government, Unemployed, Unknown, Ex-military, Housewife 
+
+* `occupation_detail`: Details about victim's occupation, when available. The details usually describe the company or public sector office where the individual worked.
+
+* `page`: Denotes which page of the English version of the Truth and Commission Report describes the victim.
+
+* `perpetrator_affiliation`: Perpetrator's political affiliation. It is a binary variable: either individuals are in the government or in the opposition. We follow the Report's broad definition the opposition: “private citizens who committed terrorist acts or other kinds of politically motivated attacks” (p.43). Thus, the opposition includes supporters of Presidente Allende, terrorist groups, etc.
+
+* `perpetrator_affiliation_detail`: Details about perpetrator's political affiliation. As with `occupation_detail`, this variable contains extra information about the perpetrator.
+
+* `place_n`: Place where the individual was spotted/reported to be seen. (in chronological order, from 1 to 6 places). Categories:
+  - Home; Work; University; In custody; In public; In hospital; Unknown
+
+* `press`: Individual disappearance or death appeared in the press.
+
+* `start_date_daily`: Date when the victim suffered abuse.
+
+* `start_date_monthly`: Calendar month when victim suffered abuse. Similar to what we did in `end_date_monthly`, we used the first day of the month as a reference. 
+
+* `victim_affiliation`: individual's political affiliation. Categories:
+  - Opposition (Allende/Left): this category encompasses individuals loyal to the ex-president Allende, as well as individuals who were affiliated or leaders of left-wing groups
+  - Regime (Pinochet): this category encompasses individuals who belonged to the Pinochet government.
+  - Unknown: this category refers to individuals whose political affiliation was unknown or unspecified.
+  - None: this category pertains to individuals whom the report states had no known political affiliation.
+
+* `victim_affiliation_detail`: details about the individual's political affiliation, when available. This complements the previous variable by giving as much information as possible on the victims’ political affiliations. 
+
+* `violence`: Type of violence. Categories: 
+  - Killed: cases where the Commission signals a definite and known death.
+  - Suicide
+  - Disappearance: cases where the victims are presumed to be dead at the hands of government agents. Government agents are assumed to have disposed of their bodies in a covert fashion, making their retrieval impossible at the time of the publication of the Report.
+  - Disappearance, information of death: cases which the Commission has information that signals that “the victims are dead; that they died at the hands of the government agents, or persons in their service; and that these or other agents disposed of the victims’ mortal remains by throwing them into a river or a sea, by covertly burying them, or by disposing of them in some other secret fashion” (p.44).
+  - Unresolved: insufficient information or evidence
+
+* `targeted`: Individual was targeted. Categories:
+  - Denounced; Summoned; Listed; Voluntarily reported; At home
+  
+* `torture`: individual was tortured, 1 = yes. The definition of torture the Report uses is the following: “[...] torture means any act by which severe pain or suffering, whether physical or mental, is intentionally inflicted on a person for such purposes as obtaining from him or a third person information or confession, punishing him for an act he or a third person has committed or is suspected of having committed, or intimidating or coercing him or a third person, or for any reason based on discrimination of any kind, when such pain or suffering is inflicted by or at the instigation of, or with the consent or acquiescence of a public official or other person acting in an official capacity. It does not include pain or suffering arising only from, inherent in or incidental to, lawful sanctions” (pp. 38-39).
+
+* `war_tribunal`: Individual was subject to a war tribunal, 1 = yes.
+
+\newpage
+
+# Replication Code
+
+## Table 01 - Sample Event
+
+The code below downloads the `pinochet` package, loads the dataset into `R` and reproduces table 01 in the article. 
+
+```{r sample-obs-no-eval, eval=FALSE, warning=FALSE, message=FALSE, tidy=FALSE}
+## Download the pinochet package
+if (!require("pinochet")) {
+        install.packages("pinochet")
+}
+
+# Load the package and the dataset
+library(pinochet)
+data(pinochet)
+
+# Load required packages
+if (!require("kableExtra")) {
+        install.packages("kableExtra")
+}
+if (!require("tidyverse")) {
+        install.packages("tidyverse")
+}
+
+# Table 01
+kable(t(pinochet[12, c(1:4,7:22,24:37)]), "latex",
+      caption = "Sample event from the dataset (selected variables)",
+      col.names = c("Value"), booktabs = T) %>%
+  kable_styling(position ="center", latex_options = "hold_position")
+```
+
+```{r sample-obs01, echo=FALSE, warning=FALSE, message=FALSE}
+if (!require("kableExtra")) {
+        install.packages("kableExtra")
+}
+if (!require("tidyverse")) {
+        install.packages("tidyverse")
+}
+if (!require("pinochet")) {
+        install.packages("pinochet")
+}
+
+
+kable(t(pinochet[12, c(1:4,7:22,24:37)]), "latex", 
+      caption = "Sample event from the dataset (selected variables)",
+      col.names = c("Value"), booktabs = T) %>%
+  kable_styling(position ="center", latex_options = "hold_position")
+```
+
+\newpage
+
+## Table 02 - Number of Events
+
+```{r number,  message=FALSE, warning=FALSE,cache=TRUE}
+kable(table(pinochet$violence), "latex",
+      caption = "Number of killings, disappearances, unresolved cases, and suicides",
+      booktabs = T, col.names = c("Violence", "N")) %>%
+  kable_styling(position ="center", latex_options = "hold_position")
+```
+
+## Figure 01 - Number of Human Rights Abuses
+
+The code below reproduces figure 01. It shows the aggregate number of victims in the regime (1973--1990).
+
+```{r time-trend, fig.align='center', fig.height=3, fig.width=5, warning=FALSE, message=FALSE, fig.cap='Human rights abuses in the Pinochet regime, 1973-1990'}
+# Install necessary packages
+if (!require("tidyverse")) {
+        install.packages("tidyverse")
+}
+if (!require("lubridate")) {
+        install.packages("lubridate")
+}
+
+# Plot
+pinochet %>% 
+  ungroup() %>% 
+  mutate(Year = year(start_date_monthly)) %>%
+  group_by(Year) %>% tally() %>% 
+  filter(!is.na(Year)) %>% 
+  ggplot(aes(x = Year, y = n)) +
+  geom_line() +
+  theme_minimal() +
+  labs(x = NULL, y = NULL, title = "Number of Human Rights Abuses", 
+       subtitle = "Pinochet Regime, 1973-1990") +
+  scale_y_continuous(breaks = c(0, 500, 1000, 1274))
+```
+
+## Figure 02 - Spatial Variation 
+
+```{r maps, warning=FALSE, message=FALSE, fig.align='center', fig.cap="Spatial variation in human rights abuses in the Pinochet regime, 1973-1990", fig.height=6, fig.width=7, tidy=FALSE}
+# Load necessary packages
+if (!require("sf")) {
+        install.packages("sf")
+}
+if (!require("devtools")) {
+        install.packages("devtools")
+}
+devtools::install_github("ropensci/rnaturalearthdata")
+if (!require("rnaturalearthhires")) {
+        install.packages("rnaturalearthhires",
+                         repos = "http://packages.ropensci.org",
+                         type = "source")
+}
+library(rnaturalearthdata)
+library(rnaturalearthhires)
+
+# Save events
+chile <- rnaturalearthhires::countries10 %>%
+st_as_sf() %>%
+filter(SOVEREIGNT %in% c("Chile", "Argentina", "Peru", "Paraguay"))
+
+violent_events <- pinochet %>% 
+  select(violence, latitude_1, longitude_1) %>%
+  filter(!is.na(violence), !is.na(latitude_1), !is.na(longitude_1)) %>%
+  st_as_sf(coords = c("longitude_1", "latitude_1"), crs = 5361) 
+
+coords_vio <- st_coordinates(violent_events) %>% as_tibble()
+violent_events <- bind_cols(violent_events, coords_vio)
+
+# Create map
+ggplot() +
+  geom_sf(data = chile) +
+  coord_sf(xlim = c(-75.6, -67), ylim = c(-55, -19)) +
+  labs(x = NULL, y = NULL) +
+  geom_point(data = violent_events, aes(x = X, y = Y,
+                                        colour = violence,
+                                        fill = violence),
+             shape = 21) + 
+  scale_colour_manual(values = c("#042333FF", "#481567FF",
+                                 "#253582FF", "#2D708EFF",
+                                 "#29AF7FFF")) +
+  scale_fill_manual(values = alpha(c("#042333FF", "#481567FF",
+                                     "#253582FF", "#2D708EFF",
+                                     "#29AF7FFF"), .6)) +
+  facet_wrap(~violence, nrow = 1) +
+  theme_minimal() +
+  theme(strip.text = element_blank()) +
+  theme(legend.position = "bottom",
+        axis.text = element_blank()) + 
+  theme(legend.title=element_blank())
+```
+
+## Figure 03 - Violence Perpetrators
+
+```{r time-trend-perpetrators, fig.align='center', fig.height=4, fig.width=5, warning=FALSE, message=FALSE, fig.cap='Violence perpetrators in the Pinochet regime, 1973-1990'}
+# Load requied packages
+if (!require("tidyverse")) {
+        install.packages("tidyverse")
+}
+if (!require("lubridate")) {
+        install.packages("lubridate")
+}
+
+# Plot
+pinochet %>% 
+  select(c(perpetrator_affiliation, start_date_monthly)) %>%
+  mutate(Year = year(start_date_monthly)) %>%
+  filter(!is.na(perpetrator_affiliation)) %>% 
+  filter(!is.na(Year)) %>%
+  filter(Year >= 1975) %>%
+  group_by(perpetrator_affiliation, Year) %>%
+  summarise(no_rows = length(perpetrator_affiliation)) %>%
+  ggplot(aes(x = Year, y = no_rows, colour = perpetrator_affiliation)) +
+  viridis::scale_color_viridis(discrete = TRUE, end = 0.5, direction = -1) + 
+  geom_line() +
+  theme_minimal() +
+  labs(x = NULL, y = NULL, title = "Violence Perpetrators", 
+       subtitle = "Pinochet Regime, 1975-1990") +
+  scale_x_continuous(breaks = c(1975, 1980, 1985, 1990)) +
+  scale_y_continuous(breaks = c(0, 50, 100, 135)) + 
+  facet_grid(perpetrator_affiliation ~ ., scales = "fixed") + 
+  theme(legend.position = "bottom") + 
+  theme(legend.title=element_blank())
+  
+```
+
+\newpage
+
+# Session Information
+
+```{r session}
+sessionInfo()
+```
+
+[^df]: Postdoctoral Research Fellow, the Political Theory Project, Brown University, 8 Fones Alley, Providence, RI 02912, [`danilofreire@gmail.com`](mailto:danilofreire@gmail.com), [`http://danilofreire.github.io`](http://danilofreire.github.io). Corresponding author.
+
+[^jm]: Senior Lecturer in Public Policy, Department of Political Economy, King's College London, [`john.meadowcroft@kcl.ac.uk`](mailto:john.meadowcroft@kcl.ac.uk), [`http://johnmeadowcroft.net`](http://johnmeadowcroft.net).
+
+[^ds]: Associate Professor, Department of Political Science and the Political Theory Project, Brown University, [`david_skarbek@brown.edu`](david_skarbek@brown.edu), [`http://davidskarbek.com`](http://davidskarbek.com).
+
+[^eg]: Software Developer, Attest, UK.
+
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{6pt}

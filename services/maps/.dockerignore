@@ -1,0 +1,12 @@
+# files ignored in the main context
+
+# https://github.com/docker/docker-py/blob/master/.dockerignore
+# .git/
+
+
+.pytest_cache/
+.vscode/
+
+index.html
+pinochet-maps.ipynb
+

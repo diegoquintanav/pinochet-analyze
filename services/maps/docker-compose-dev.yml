@@ -1,0 +1,20 @@
+version: "3.7"
+
+services:
+  maps:
+    # served as a static file with https://hub.docker.com/_/nginx/
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    image: pinochet-maps:development
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./conf.d/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - maps_nw
+
+networks:
+  maps_nw:
+    driver: bridge
