@@ -9,6 +9,14 @@ flake8 = "*"
 pre-commit = "*"
 gitchangelog = "*"
 pytest = "*"
+jupyter = "*"
+jupyter-contrib-nbextensions = "*"
+jupyter-nbextensions-configurator = "*"
+pandas = "*"
+numpy = "*"
+folium = "*"
+geopandas = "*"
+bumpversion = "*"
 
 [packages]
 
