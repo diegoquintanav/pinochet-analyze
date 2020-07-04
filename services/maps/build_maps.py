@@ -59,7 +59,7 @@ def style_function(row):
     raise NotImplemented
     return {
         "color": "#0000ff"
-        if row["properties"]["method"] == "Gun" is True
+        if (row["properties"]["method"] == "Gun") is True
         else "#00ff00"
     }
 

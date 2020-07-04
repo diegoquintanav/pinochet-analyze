@@ -1,4 +1,4 @@
-FROM python:3.7.4 AS build-map
+FROM python:3.8 AS build-map
 
 # create src folder
 RUN mkdir -p /src/maps

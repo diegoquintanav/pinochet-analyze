@@ -17,6 +17,7 @@ numpy = "*"
 folium = "*"
 geopandas = "*"
 bumpversion = "*"
+pystache = "*"
 
 [packages]
 
