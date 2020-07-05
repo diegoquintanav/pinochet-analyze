@@ -1,0 +1,37 @@
+-i https://pypi.org/simple
+aniso8601==7.0.0
+certifi==2020.6.20
+click==7.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+colorama==0.4.3; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+coverage==5.1
+dateparser==0.7.6; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+flask-graphql==2.0.1
+flask==1.1.2
+graphene==2.1.8
+graphql-core==2.3.2
+graphql-relay==2.0.1
+graphql-server-core==1.2.0
+humanize==2.4.1; python_version >= '3.5'
+itsdangerous==1.1.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+jinja2==2.11.2; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+markupsafe==1.1.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+maya==0.6.1
+neo4j==4.0.1
+neobolt==1.7.17
+neotime==1.7.4
+pendulum==2.1.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+promise==2.3
+prompt-toolkit==2.0.10
+py2neo==4.3.0
+pygments==2.3.1
+python-dateutil==2.8.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+pytz==2020.1
+pytzdata==2019.3; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+regex==2020.6.8
+rx==1.6.1
+six==1.15.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+snaptime==0.2.4
+tzlocal==2.1
+urllib3==1.24.3; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3' and python_version < '4'
+wcwidth==0.2.5
+werkzeug==1.0.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'

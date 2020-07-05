@@ -18,8 +18,16 @@ folium = "*"
 geopandas = "*"
 bumpversion = "*"
 pystache = "*"
+autopep8 = "*"
 
 [packages]
+py2neo = "*"
+neo4j = "*"
+flask = "*"
+flask-graphql = "*"
+graphene = "*"
+coverage = "*"
+maya = "*"
 
 [requires]
 python_version = "3.8"
