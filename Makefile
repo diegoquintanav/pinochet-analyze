@@ -45,3 +45,5 @@ bump.changelog: ## Updates CHANGELOG
 bump.undo: ## Goes back one commit, i.e. reverts changes on files from last version bump (experimental)
 	@sh ./undo_bump_version.sh
 
+pipenv.freeze.graphapi: ## dumps Pipfile.lock into a requirements.txt used in the docker build
+	pipenv lock --requirements > services/graph-api/requirements.txt
