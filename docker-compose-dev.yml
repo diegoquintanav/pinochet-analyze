@@ -38,6 +38,7 @@ services:
       - $HOME/neo4j/neo4j-core1/logs:/logs
       - $HOME/neo4j/neo4j-core1/plugins:/plugins
       - $HOME/neo4j/neo4j-core1/import:/import
+      - ./pinochet/data/pinochet.csv:/import/pinochet.csv
     environment:
       - NEO4J_AUTH=none
       # - NEO4J_AUTH=neo4j/admin
@@ -51,6 +52,8 @@ services:
       - NEO4J_dbms_connector_bolt_listen__address=:7687
       - NEO4J_dbms_security_procedures_unrestricted=apoc.*,algo.*
       - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_json_myjson_url=file://pinochet.csv
+      - NEO4J_apoc_json_myjson__github_url=https://raw.githubusercontent.com/danilofreire/pinochet/master/data/pinochet.csv
 
   maps:
     # served as a static file with https://hub.docker.com/_/nginx/
