@@ -19,6 +19,8 @@ geopandas = "*"
 bumpversion = "*"
 pystache = "*"
 autopep8 = "*"
+yapf = "*"
+ipython-cypher = "*"
 
 [packages]
 py2neo = "*"

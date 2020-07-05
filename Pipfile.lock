@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "287fdbdeb45ef83c3303dbcae39d3b6dfb3e284499f84bb4431c63425b511cda"
+            "sha256": "091a84857bf5ff095905de50d863b0a3c42a9508d5a12ff61df9a5364116575b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -595,11 +595,11 @@
         },
         "ipykernel": {
             "hashes": [
-                "sha256:731adb3f2c4ebcaff52e10a855ddc87670359a89c9c784d711e62d66fccdafae",
-                "sha256:a8362e3ae365023ca458effe93b026b8cdadc0b73ff3031472128dd8a2cf0289"
+                "sha256:120d1e7057824a8a73d8b721725393ca7c6562655cdc1d12652316695c8b04c0",
+                "sha256:ca45d173ae9cd4ed8a57980529e1d8d39ea56df5358b8608dbe45733023d8df4"
             ],
             "markers": "python_version >= '3.5'",
-            "version": "==5.3.0"
+            "version": "==5.3.1"
         },
         "ipython": {
             "hashes": [
@@ -608,6 +608,13 @@
             ],
             "markers": "python_version >= '3.3'",
             "version": "==7.16.1"
+        },
+        "ipython-cypher": {
+            "hashes": [
+                "sha256:e0cb60954829100af8380dcc189434859ceea69bbb659e962e19899f31fcd5b0"
+            ],
+            "index": "pypi",
+            "version": "==0.2.6"
         },
         "ipython-genutils": {
             "hashes": [
@@ -831,6 +838,12 @@
             "markers": "python_version >= '3.5'",
             "version": "==5.0.7"
         },
+        "neo4jrestclient": {
+            "hashes": [
+                "sha256:b585ffdddc23d7cb54ddf2ae0bc35cdb445ff576c15f07b3e8ffde811ac087cf"
+            ],
+            "version": "==2.1.1"
+        },
         "nodeenv": {
             "hashes": [
                 "sha256:4b0b77afa3ba9b54f4b6396e60b0c83f59eaeb2d63dc3cc7a70f7f4af96c82bc"
@@ -958,6 +971,14 @@
             ],
             "index": "pypi",
             "version": "==2.6.0"
+        },
+        "prettytable": {
+            "hashes": [
+                "sha256:2d5460dc9db74a32bcc8f9f67de68b2c4f4d2f01fa3bd518764c69156d9cacd9",
+                "sha256:853c116513625c738dc3ce1aee148b5b5757a86727e67eff6502c7ca59d43c36",
+                "sha256:a53da3b43d7a5c229b5e3ca2892ef982c46b7923b51e98f0db49956531211c4f"
+            ],
+            "version": "==0.7.2"
         },
         "prometheus-client": {
             "hashes": [
@@ -1329,6 +1350,14 @@
                 "sha256:bd314f8ceb488571a5ffea6cc5b9fc6cba0adaf88a9d2386b93a489751938bcd"
             ],
             "version": "==3.5.1"
+        },
+        "yapf": {
+            "hashes": [
+                "sha256:3000abee4c28daebad55da6c85f3cd07b8062ce48e2e9943c8da1b9667d48427",
+                "sha256:3abf61ba67cf603069710d30acbc88cfe565d907e16ad81429ae90ce9651e0c9"
+            ],
+            "index": "pypi",
+            "version": "==0.30.0"
         }
     }
 }
