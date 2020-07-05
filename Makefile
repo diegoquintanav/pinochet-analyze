@@ -21,13 +21,13 @@ from-scratch: ## docker-compose up -d --build
 down: ## docker-compose down
 	docker-compose down
 
-maps.logs: ## Show container logs for <users> service
+maps.logs: ## Show container logs for <maps> service
 	docker-compose logs --follow --tail 10 maps
 
-maps.flake8: ## Run flake8 on <users>
+maps.flake8: ## Run flake8 on <maps>
 	docker-compose exec maps flake8 project
 
-maps.sh: ## Get shell access to <users> container
+maps.sh: ## Get shell access to <maps> service
 	@docker-compose exec maps bash
 
 bump.major: ## Updates CHANGELOG and bumps to next major VERSION (i.e. VERSION.y.z)
