@@ -5,6 +5,7 @@ services:
     build:
       context: ./services/graph-api
       dockerfile: Dockerfile
+    restart: always
     volumes:
       - "./services/graph-api:/usr/src/app"
     ports:
