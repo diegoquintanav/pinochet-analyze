@@ -1,8 +1,12 @@
+"""Module docstring text"""
+__version__ = '0.1.1'
+
 import os
 from flask import Flask, jsonify
 from flask_graphql import GraphQLView
 
 from .api.schemas import schema
+from .api.models import graph
 
 
 # initialize extensions here
@@ -16,9 +20,11 @@ def create_app():
     app_settings = os.getenv("APP_SETTINGS")
     app.config.from_object(app_settings)
 
-    app.add_url_rule('/graphql', view_func=GraphQLView.as_view(
-        'graphql', schema=schema, graphiql=True)
-    )
+    app.add_url_rule('/graphql',
+                     view_func=GraphQLView.as_view('graphql',
+                                                   schema=schema,
+                                                   graphiql=True)
+                     )
 
     @app.errorhandler(404)
     def page_not_found(e):
@@ -31,8 +37,6 @@ def create_app():
     # shell context for flask cli
     @app.shell_context_processor
     def ctx():
-        return {"app": app}
+        return {"app": app, "graph": graph}
 
     return app
-
-

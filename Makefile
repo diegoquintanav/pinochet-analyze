@@ -27,6 +27,9 @@ maps.logs: ## Show container logs for <maps> service
 maps.flake8: ## Run flake8 on <maps>
 	docker-compose exec maps flake8 project
 
+api.sh: ## Get shell access to the <graphapi> service
+	@docker-compose exec graphapi bash
+
 api.logs: ## Show container logs for <graphapi> service
 	docker-compose logs --follow --tail 10 graphapi
 
@@ -35,6 +38,12 @@ api.repl: ## Get access to a python REPL within the application context in the <
 
 neo4j.db.recreate: ## Drops database in <core1> and recreates it from scratch
 	@docker-compose exec graphapi python manage.py recreate_db
+
+neo4j.db.delete: ## Drops database in <core1>
+	@docker-compose exec graphapi python manage.py delete_db
+
+neo4j.db.seed: ## Seeds database in <core1>
+	@docker-compose exec graphapi python manage.py seed_db
 
 maps.sh: ## Get shell access to <maps> service
 	@docker-compose exec maps bash

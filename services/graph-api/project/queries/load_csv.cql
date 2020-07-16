@@ -4,7 +4,6 @@ CALL apoc.load.csv(url, {
     header:true, 
     mapping:{
         individual_id: {type:'int'},
-        individual_id: {type:'int'},
         minor: {type:'bool'},
         age: {type:'str'},
         male: {type:'bool'},

@@ -1,5 +1,3 @@
-# services/users/project/config.py
-
 import os
 
 
@@ -13,6 +11,8 @@ class BaseConfig:
     BIND_PORT = os.environ.get('BIND_PORT', default=5000)
     NEO4J_HOST = os.environ.get('NEO4J_HOST', default='localhost')
     NEO4J_PORT = os.environ.get('NEO4J_PORT', default=7687)
+    NEO4J_USER = os.environ.get('NEO4J_USER', default="")
+    NEO4J_PASSWORD = os.environ.get('NEO4J_PASSWORD', default="")
 
 
 class DevelopmentConfig(BaseConfig):
