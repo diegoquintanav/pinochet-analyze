@@ -1,10 +1,11 @@
 import os
+
 import maya
+from flask import current_app
 from graphql import GraphQLError
 from py2neo import Graph
-from py2neo.ogm import GraphObject, Property, Label, RelatedTo
-from flask import current_app
-
+from py2neo.ogm import (GraphObject, Label, Property, RelatedFrom,
+                        RelatedObjects, RelatedTo)
 
 graph = Graph(
     host=os.environ.get("NEO4J_HOST"),
@@ -77,6 +78,8 @@ class Victim(BaseModel):
     victim_affiliation_detail = CustomProperty(dtype=str)
     targeted = CustomProperty(dtype=str)
 
+    victim_of = RelatedTo("ViolentEvent", "VICTIM_OF")
+
     def fetch(self):
         return self.match(graph, self.individual_id).first()
 
@@ -86,11 +89,23 @@ class Perpetrator(BaseModel):
     perpetrator_affiliation_detail = CustomProperty(dtype=str)
     war_tribunal = CustomProperty(dtype=bool)
 
+    perpetrator_of = RelatedTo("ViolentEvent", "PERPETRATOR_OF")
+
 
 class Location(BaseModel):
     exact_coordinates = CustomProperty(dtype=bool)
     location = CustomProperty(dtype=str)
     place = CustomProperty(dtype=str)
+    location_order = CustomProperty(dtype=str)
+    latitude = CustomProperty(dtype=str)
+    longitude = CustomProperty(dtype=str)
+
+    next_location = RelatedTo("Location", "NEXT_LOCATION")
+
+    previous_locations = RelatedFrom("Location", "NEXT_LOCATION")
+    first_violent_events = RelatedFrom("ViolentEvent", "FIRST_LOCATION")
+    in_violent_events = RelatedFrom("ViolentEvent", "IN_LOCATION")
+    last_violent_events = RelatedFrom("ViolentEvent", "LAST_LOCATION")
 
 
 class ViolentEvent(BaseModel):
@@ -106,3 +121,12 @@ class ViolentEvent(BaseModel):
     end_date_monthly = CustomProperty(dtype=str)
     page = CustomProperty(dtype=str)
     additional_comments = CustomProperty(dtype=str)
+
+    # outgoing relationships
+    first_location = RelatedTo("Location", "FIRST_LOCATION")
+    in_location = RelatedTo("Location", "IN_LOCATION")
+    last_location = RelatedTo("Location", "LAST_LOCATION")
+
+    # incoming relationships
+    victims = RelatedFrom("Victim", "VICTIM_OF")
+    perpetrators = RelatedFrom("perpetrator", "PERPETRATOR_OF")

@@ -5,7 +5,7 @@ from flask import Flask, jsonify
 from flask_graphql import GraphQLView
 
 from project.api.schemas import schema
-from project.api.models import graph
+from project.api.models import graph, Victim, ViolentEvent, Location, Perpetrator
 
 # resolve what configuration will be used
 config_dispatcher = {
@@ -42,7 +42,7 @@ def create_app():
     # shell context for flask cli
     @app.shell_context_processor
     def ctx():
-        return {"app": app, "graph": graph}
+        return {"app": app, "graph": graph, "Victim": Victim, "ViolentEvent": ViolentEvent, "Location": Location, "Perpetrator": Perpetrator}
 
     return app
 

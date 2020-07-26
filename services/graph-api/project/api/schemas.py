@@ -1,6 +1,6 @@
 import graphene
 
-from .models import Victim
+from project.api.models import Victim
 
 
 class VictimSchema(graphene.ObjectType):

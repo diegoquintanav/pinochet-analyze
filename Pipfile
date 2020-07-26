@@ -30,6 +30,7 @@ flask-graphql = "*"
 graphene = "*"
 coverage = "*"
 maya = "*"
+progress = "*"
 
 [requires]
 python_version = "3.8"

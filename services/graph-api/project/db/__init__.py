@@ -1,19 +1,55 @@
 import csv
+import time
+import typing as T
 from flask import current_app
 from pathlib import Path
-from ..api.models import graph, Location, Victim, Perpetrator, ViolentEvent
+from progress.bar import IncrementalBar
+from project.api.models import graph, Location, Victim, Perpetrator, ViolentEvent
 
 
-def clear_graph():
+def clear_graph(dry_run=False):
+    if dry_run:
+        return {}
     return graph.run("MATCH (n) DETACH DELETE n").stats()
 
 
-def __create_node(graph_object):
+def __create_node(graph_object, dry_run=False):
     current_app.logger.debug(f"Creating {graph_object}")
-    graph.create(graph_object)
+    if dry_run:
+        current_app.logger.debug("Using --dry-run. Nothing was created.")
+    else:
+        current_app.logger.debug("Done")
+        graph.create(graph_object)
 
 
-def seed_graph(filepath):
+def get_locations(row: dict) -> T.List[Location]:
+    locations = []
+
+    # there are 6 locations max in the dataset. We will fetch those that are not empty
+    for n in range(1, 7):
+        location_name = row.get(f"location_{n}", None) or row.get(
+            f"start_location_{n}", None) or row.get(f"end_location_{n}", None)
+
+        if (location_name is not None and location_name != "NA"):
+            loc = Location(
+                exact_location=row[f"exact_coordinates_{n}"],
+                location=location_name,
+                place=row[f"place_{n}"],
+                latitude=row[f"latitude_{n}"],
+                longitude=row[f"longitude_{n}"],
+                location_order=n
+            )
+            locations.append(loc)
+    return locations
+
+
+def seed_graph(filepath, **kwargs):
+
+    dry_run = kwargs.pop("dry_run", False)
+
+    # we know this number counting the rows before
+    # with wc -l pinochet.csv
+    bar = IncrementalBar('Insertions', max=2398)
 
     with open(filepath) as fp:
         csv_reader = csv.DictReader(f=fp)
@@ -42,17 +78,10 @@ def seed_graph(filepath):
                 war_tribunal=row["war_tribunal"],
             )
 
-            locations = []
+            locations = get_locations(row)
 
-            # there are 6 locations max in the dataset. We will fetch those that are not empty
-            for n in range(1, 7):
-                loc = Location(
-                    exact_location=row[f"exact_coordinates_{n}"],
-                    location=row.get(f"location_{n}", None) or row.get(
-                        f"start_location_{n}", None) or row.get(f"end_location_{n}", None),
-                    place=row[f"place_{n}"],
-                )
-                locations.append((n, loc))
+            # to track what is the last location in the row ended up being
+            max_n = len(locations)
 
             event = ViolentEvent(
                 violence=row["violence"],
@@ -69,12 +98,29 @@ def seed_graph(filepath):
                 additional_comments=row["additional_comments"],
             )
 
-            # create nodes
-            __create_node(victim)
-            __create_node(perp)
-            for n, location in locations:
-                __create_node(location)
-            __create_node(event)
+            # create relationships
+            if locations:
+                event.first_location.add(locations[0])
+                event.last_location.add(locations[-1])
+                for index, location in enumerate(locations):
+                    if index != 0:
+                        locations[index - 1].next_location.add(location)
+                    event.in_location.add(location)
 
-            status = "Success"
+            victim.victim_of.add(event)
+            perp.perpetrator_of.add(event)
+
+            # create nodes
+            __create_node(victim, dry_run)
+            __create_node(perp, dry_run)
+            __create_node(event, dry_run)
+
+            for location in locations:
+                __create_node(location, dry_run)
+
+            # increment progress bar
+            bar.next()
+
+    status = "Success"
+    bar.finish()
     return status
