@@ -4,7 +4,6 @@ from graphql import GraphQLError
 from py2neo import Graph
 from py2neo.ogm import GraphObject, Property, Label, RelatedTo
 from flask import current_app
-from .utils import Neo4jDatePair
 
 
 graph = Graph(
@@ -30,7 +29,7 @@ class CustomProperty(Property):
                 instance.__node__[self.key] = self.dtype(value)
             except ValueError:
                 current_app.logger.error(
-                    f"Could not convert {value} to {dtype}", exc_info=True)
+                    f"Could not convert {value}", exc_info=True)
 
 
 class BaseModel(GraphObject):

@@ -76,5 +76,5 @@ def seed_graph(filepath):
                 __create_node(location)
             __create_node(event)
 
-            status = "success"
+            status = "Success"
     return status

@@ -56,10 +56,10 @@ class Query(graphene.ObjectType):
     # perpetrator = graphene.Field(lambda: PerpetratorSchema)
     # violence_event = graphene.Field(lambda: ViolenceEventSchema)
 
-    def resolve_victims(root, info):
+    def resolve_victims(self, info):
         return [VictimSchema(**victim.as_dict()) for victim in Victim().all]
 
-    def resolve_victim(root, info, individual_id):
+    def resolve_victim(self, info, individual_id):
         victim = Victim(individual_id=individual_id).fetch()
         return VictimSchema(**victim.as_dict())
 
