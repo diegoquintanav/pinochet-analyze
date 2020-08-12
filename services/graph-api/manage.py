@@ -14,7 +14,7 @@ cli = FlaskGroup(create_app=create_app, set_debug_flag=False)
 @cli.command("delete_db")
 @click.option("--dry-run", is_flag=True)
 def delete_db(dry_run):
-    current_app.logger.info("Deleting graph")
+    current_app.logger.info("Deleting graph (--dry-run)" if dry_run else "Deleting graph")
     status = clear_graph(dry_run=dry_run)
     for k, v in status.items():
         current_app.logger.info(k + ": " + str(v))
@@ -26,7 +26,7 @@ def delete_db(dry_run):
 def seed_db(dry_run):
     PINOCHET_CSV = os.environ.get(
         "PINOCHET_CSV", Path(__file__).parent.joinpath("project", "db", "pinochet.csv"))
-    current_app.logger.info("Seeding tables")
+    current_app.logger.info("Seeding tables (--dry-run)" if dry_run else "Seeding tables")
     status = seed_graph(filepath=PINOCHET_CSV, dry_run=dry_run)
     current_app.logger.info(status)
     current_app.logger.info("Done")

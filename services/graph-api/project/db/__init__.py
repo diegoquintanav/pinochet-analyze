@@ -1,16 +1,25 @@
 import csv
+import hashlib
 import time
 import typing as T
-from flask import current_app
+import uuid
 from pathlib import Path
+
+from flask import current_app
 from progress.bar import IncrementalBar
+
 from project.api.models import (
-    graph,
     Location,
-    Victim,
     Perpetrator,
+    Victim,
     ViolentEvent,
+    graph,
 )
+
+
+def to_md5(elements: T.List, *args, **kwargs):
+    pre = "".join(str(arg).lower() for arg in elements)
+    return hashlib.md5(pre.encode("utf-8")).hexdigest()
 
 
 def clear_graph(dry_run=False):
@@ -40,14 +49,20 @@ def get_locations(row: dict) -> T.List[Location]:
         )
 
         if location_name is not None and location_name != "NA":
+
+            loc_mapping = {
+                "exact_location": row[f"exact_coordinates_{n}"],
+                "location": location_name,
+                "place": row[f"place_{n}"],
+                "latitude": row[f"latitude_{n}"],
+                "longitude": row[f"longitude_{n}"],
+                "location_order": n,
+            }
+
             loc = Location(
-                exact_location=row[f"exact_coordinates_{n}"],
-                location=location_name,
-                place=row[f"place_{n}"],
-                latitude=row[f"latitude_{n}"],
-                longitude=row[f"longitude_{n}"],
-                location_order=n,
+                location_id=to_md5(loc_mapping.values()), **loc_mapping
             )
+
             locations.append(loc)
     return locations
 
@@ -65,7 +80,7 @@ def seed_graph(filepath, **kwargs):
         for row in csv_reader:
             # create victims
             victim = Victim(
-                individual_id=row["individual_id"],
+                individual_id=row["individual_id"],  # pk
                 group_id=row["group_id"],
                 first_name=row["first_name"],
                 last_name=row["last_name"],
@@ -81,12 +96,16 @@ def seed_graph(filepath, **kwargs):
                 targeted=row["targeted"],
             )
 
-            perp = Perpetrator(
-                perpetrator_affiliation=row["perpetrator_affiliation"],
-                perpetrator_affiliation_detail=row[
+            perp_mapping = {
+                "perpetrator_affiliation": row["perpetrator_affiliation"],
+                "perpetrator_affiliation_detail": row[
                     "perpetrator_affiliation_detail"
                 ],
-                war_tribunal=row["war_tribunal"],
+                "war_tribunal": row["war_tribunal"],
+            }
+
+            perp = Perpetrator(
+                perpetrator_id=to_md5(perp_mapping.values()), **perp_mapping
             )
 
             locations = get_locations(row)
@@ -95,6 +114,7 @@ def seed_graph(filepath, **kwargs):
             max_n = len(locations)
 
             event = ViolentEvent(
+                event_id=uuid.uuid4(),  # pk
                 violence=row["violence"],
                 method=row["method"],
                 interrogation=row["interrogation"],

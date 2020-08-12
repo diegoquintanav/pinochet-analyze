@@ -4,8 +4,14 @@ import maya
 from flask import current_app
 from graphql import GraphQLError
 from py2neo import Graph
-from py2neo.ogm import (GraphObject, Label, Property, RelatedFrom,
-                        RelatedObjects, RelatedTo)
+from py2neo.ogm import (
+    GraphObject,
+    Label,
+    Property,
+    RelatedFrom,
+    RelatedObjects,
+    RelatedTo,
+)
 
 graph = Graph(
     host=os.environ.get("NEO4J_HOST"),
@@ -30,7 +36,8 @@ class CustomProperty(Property):
                 instance.__node__[self.key] = self.dtype(value)
             except ValueError:
                 current_app.logger.error(
-                    f"Could not convert {value}", exc_info=True)
+                    f"Could not convert {value}", exc_info=True
+                )
 
 
 class BaseModel(GraphObject):
@@ -53,7 +60,7 @@ class BaseModel(GraphObject):
         return self.match(graph)
 
     def as_dict(self):
-        return self._GraphObject__ogm.__dict__.get('node')
+        return self._GraphObject__ogm.__dict__.get("node")
 
     def save(self):
         graph.push(self)
@@ -61,7 +68,8 @@ class BaseModel(GraphObject):
 
 class Victim(BaseModel):
     """Base class for a victim"""
-    __primarykey__ = 'individual_id'
+
+    __primarykey__ = "individual_id"
 
     # from data
     individual_id = CustomProperty(dtype=int)
@@ -85,6 +93,10 @@ class Victim(BaseModel):
 
 
 class Perpetrator(BaseModel):
+
+    __primarykey__ = "perpetrator_id"
+
+    perpetrator_id = CustomProperty(dtype=str)
     perpetrator_affiliation = CustomProperty(dtype=str)
     perpetrator_affiliation_detail = CustomProperty(dtype=str)
     war_tribunal = CustomProperty(dtype=bool)
@@ -93,6 +105,10 @@ class Perpetrator(BaseModel):
 
 
 class Location(BaseModel):
+
+    __primarykey__ = "location_id"
+
+    location_id = CustomProperty(dtype=str)
     exact_coordinates = CustomProperty(dtype=bool)
     location = CustomProperty(dtype=str)
     place = CustomProperty(dtype=str)
@@ -109,6 +125,10 @@ class Location(BaseModel):
 
 
 class ViolentEvent(BaseModel):
+
+    __primarykey__ = "event_id"
+
+    event_id = CustomProperty(dtype=str)
     violence = CustomProperty(dtype=str)
     method = CustomProperty(dtype=str)
     interrogation = CustomProperty(dtype=bool)
