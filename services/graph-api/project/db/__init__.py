@@ -4,7 +4,13 @@ import typing as T
 from flask import current_app
 from pathlib import Path
 from progress.bar import IncrementalBar
-from project.api.models import graph, Location, Victim, Perpetrator, ViolentEvent
+from project.api.models import (
+    graph,
+    Location,
+    Victim,
+    Perpetrator,
+    ViolentEvent,
+)
 
 
 def clear_graph(dry_run=False):
@@ -27,17 +33,20 @@ def get_locations(row: dict) -> T.List[Location]:
 
     # there are 6 locations max in the dataset. We will fetch those that are not empty
     for n in range(1, 7):
-        location_name = row.get(f"location_{n}", None) or row.get(
-            f"start_location_{n}", None) or row.get(f"end_location_{n}", None)
+        location_name = (
+            row.get(f"location_{n}", None)
+            or row.get(f"start_location_{n}", None)
+            or row.get(f"end_location_{n}", None)
+        )
 
-        if (location_name is not None and location_name != "NA"):
+        if location_name is not None and location_name != "NA":
             loc = Location(
                 exact_location=row[f"exact_coordinates_{n}"],
                 location=location_name,
                 place=row[f"place_{n}"],
                 latitude=row[f"latitude_{n}"],
                 longitude=row[f"longitude_{n}"],
-                location_order=n
+                location_order=n,
             )
             locations.append(loc)
     return locations
@@ -49,7 +58,7 @@ def seed_graph(filepath, **kwargs):
 
     # we know this number counting the rows before
     # with wc -l pinochet.csv
-    bar = IncrementalBar('Insertions', max=2398)
+    bar = IncrementalBar("Insertions", max=2398)
 
     with open(filepath) as fp:
         csv_reader = csv.DictReader(f=fp)
@@ -69,12 +78,14 @@ def seed_graph(filepath, **kwargs):
                 occupation_detail=row["occupation_detail"],
                 victim_affiliation=row["victim_affiliation"],
                 victim_affiliation_detail=row["victim_affiliation_detail"],
-                targeted=row["targeted"]
+                targeted=row["targeted"],
             )
 
             perp = Perpetrator(
                 perpetrator_affiliation=row["perpetrator_affiliation"],
-                perpetrator_affiliation_detail=row["perpetrator_affiliation_detail"],
+                perpetrator_affiliation_detail=row[
+                    "perpetrator_affiliation_detail"
+                ],
                 war_tribunal=row["war_tribunal"],
             )
 
@@ -105,7 +116,7 @@ def seed_graph(filepath, **kwargs):
                 for index, location in enumerate(locations):
                     if index != 0:
                         locations[index - 1].next_location.add(location)
-                    event.in_location.add(location)
+                    location.in_violent_events.add(event)
 
             victim.victim_of.add(event)
             perp.perpetrator_of.add(event)
