@@ -1,4 +1,6 @@
 from datetime import datetime
+import typing as T
+import hashlib
 
 
 class Neo4jDatePair:
@@ -8,3 +10,8 @@ class Neo4jDatePair:
 
     def to_datetime(self):
         return datetime(self.value, self.format)
+
+
+def to_md5(elements: T.List, *args, **kwargs):
+    pre = "".join(str(arg).lower() for arg in elements)
+    return hashlib.md5(pre.encode("utf-8")).hexdigest()

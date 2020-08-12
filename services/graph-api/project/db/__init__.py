@@ -16,10 +16,7 @@ from project.api.models import (
     graph,
 )
 
-
-def to_md5(elements: T.List, *args, **kwargs):
-    pre = "".join(str(arg).lower() for arg in elements)
-    return hashlib.md5(pre.encode("utf-8")).hexdigest()
+from ..api.utils import to_md5
 
 
 def clear_graph(dry_run=False):

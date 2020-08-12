@@ -1,4 +1,5 @@
 import os
+import typing as T
 
 import maya
 from flask import current_app
@@ -12,6 +13,8 @@ from py2neo.ogm import (
     RelatedObjects,
     RelatedTo,
 )
+
+from .utils import to_md5
 
 graph = Graph(
     host=os.environ.get("NEO4J_HOST"),
@@ -50,20 +53,36 @@ class BaseModel(GraphObject):
 
     __dtypes_schema__ = None
 
+    _id_hash_mapping = None
+
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             if hasattr(self, key):
                 setattr(self, key, value)
 
-    @property
-    def all(self):
-        return self.match(graph)
+    @classmethod
+    def all(cls):
+        return cls.match(graph)
 
     def as_dict(self):
-        return self._GraphObject__ogm.__dict__.get("node")
+        return dict(self.__node__)
 
     def save(self):
         graph.push(self)
+
+    def fetch(self):
+        pk = getattr(self, "__primarykey__")
+        return self.match(graph, getattr(self, pk)).first()
+
+    def extract_id(self, attrs: T.List):
+        return to_md5([getattr(self, attr) for attr in attrs])
+
+    def fetch_by_attr(self, attr, value, exact=True):
+        # https://py2neo.org/v4/ogm.html#object-matching
+        operator = "=" if exact else "=~"
+        # value = value if exact else f".*{value}.*"
+        q = f"_.{attr} {operator} '{value}'"  #  e.g. _.name =~ ".*K.*" noqa
+        return list(self.match(graph).where(q))
 
 
 class Victim(BaseModel):
@@ -88,10 +107,6 @@ class Victim(BaseModel):
 
     victim_of = RelatedTo("ViolentEvent", "VICTIM_OF")
 
-    def fetch(self):
-        return self.match(graph, self.individual_id).first()
-
-
 class Perpetrator(BaseModel):
 
     __primarykey__ = "perpetrator_id"
@@ -102,6 +117,17 @@ class Perpetrator(BaseModel):
     war_tribunal = CustomProperty(dtype=bool)
 
     perpetrator_of = RelatedTo("ViolentEvent", "PERPETRATOR_OF")
+
+    _id_hash_mapping = [
+        "perpetrator_affiliation",
+        "perpetrator_affiliation_detail",
+        "war_tribunal",
+    ]
+
+    def get_instance_id(self):
+        return self.extract_id(self._id_hash_mapping)
+
+    
 
 
 class Location(BaseModel):
@@ -123,6 +149,17 @@ class Location(BaseModel):
     in_violent_events = RelatedFrom("ViolentEvent", "IN_LOCATION")
     last_violent_events = RelatedFrom("ViolentEvent", "LAST_LOCATION")
 
+    _id_hash_mapping = [
+        "exact_location",
+        "location",
+        "place",
+        "latitude",
+        "longitude",
+        "location_order",
+    ]
+
+    def get_instance_id(self):
+        return self.extract_id(self._id_hash_mapping)
 
 class ViolentEvent(BaseModel):
 
