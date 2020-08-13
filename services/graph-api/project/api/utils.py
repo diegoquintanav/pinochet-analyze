@@ -12,6 +12,9 @@ class Neo4jDatePair:
         return datetime(self.value, self.format)
 
 
-def to_md5(elements: T.List, *args, **kwargs):
+def to_md5(elements: T.List, *args, **kwargs) -> str:
     pre = "".join(str(arg).lower() for arg in elements)
     return hashlib.md5(pre.encode("utf-8")).hexdigest()
+
+def to_isoformat(datestring: str) -> str:
+    return datetime.strptime(datestring, "%Y-%m-%d").date().isoformat()

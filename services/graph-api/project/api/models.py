@@ -1,5 +1,6 @@
 import os
 import typing as T
+from datetime import datetime
 
 import maya
 from flask import current_app
@@ -23,20 +24,34 @@ graph = Graph(
     password=os.environ.get("NEO4J_PASSWORD"),
 )
 
+DATE_FORMAT = "%Y-%m-%d"
+
 
 class CustomProperty(Property):
-    """Implements a datatype"""
+    """Implements a datatype
+    
+    See https://github.com/technige/py2neo/issues/830 for details
+    """
 
     def __init__(self, **kwargs):
+        """I know already that this is ugly, sorry
+        """
         dtype = kwargs.pop("dtype")
         if dtype is not None:
             self.dtype = dtype
+
+        self.date_format = kwargs.pop("format", DATE_FORMAT)
         super().__init__(**kwargs)
 
     def __set__(self, instance, value):
         if hasattr(self, "dtype"):
             try:
-                instance.__node__[self.key] = self.dtype(value)
+                if self.dtype == datetime.strptime:
+                    instance.__node__[self.key] = datetime.strptime(
+                        value, self.date_format
+                    )
+                else:
+                    instance.__node__[self.key] = self.dtype(value)
             except ValueError:
                 current_app.logger.error(
                     f"Could not convert {value}", exc_info=True
@@ -80,7 +95,6 @@ class BaseModel(GraphObject):
     def fetch_by_attr(self, attr, value, exact=True):
         # https://py2neo.org/v4/ogm.html#object-matching
         operator = "=" if exact else "=~"
-        # value = value if exact else f".*{value}.*"
         q = f"_.{attr} {operator} '{value}'"  #  e.g. _.name =~ ".*K.*" noqa
         return list(self.match(graph).where(q))
 
@@ -107,6 +121,7 @@ class Victim(BaseModel):
 
     victim_of = RelatedTo("ViolentEvent", "VICTIM_OF")
 
+
 class Perpetrator(BaseModel):
 
     __primarykey__ = "perpetrator_id"
@@ -126,8 +141,6 @@ class Perpetrator(BaseModel):
 
     def get_instance_id(self):
         return self.extract_id(self._id_hash_mapping)
-
-    
 
 
 class Location(BaseModel):
@@ -161,6 +174,7 @@ class Location(BaseModel):
     def get_instance_id(self):
         return self.extract_id(self._id_hash_mapping)
 
+
 class ViolentEvent(BaseModel):
 
     __primarykey__ = "event_id"
@@ -172,10 +186,18 @@ class ViolentEvent(BaseModel):
     torture = CustomProperty(dtype=bool)
     mistreatment = CustomProperty(dtype=bool)
     press = CustomProperty(dtype=bool)
-    start_date_daily = CustomProperty(dtype=str)
-    end_date_daily = CustomProperty(dtype=str)
-    start_date_monthly = CustomProperty(dtype=str)
-    end_date_monthly = CustomProperty(dtype=str)
+    start_date_daily = CustomProperty(
+        dtype=datetime.strptime, format=DATE_FORMAT
+    )
+    end_date_daily = CustomProperty(
+        dtype=datetime.strptime, format=DATE_FORMAT
+    )
+    start_date_monthly = CustomProperty(
+        dtype=datetime.strptime, format=DATE_FORMAT
+    )
+    end_date_monthly = CustomProperty(
+        dtype=datetime.strptime, format=DATE_FORMAT
+    )
     page = CustomProperty(dtype=str)
     additional_comments = CustomProperty(dtype=str)
 

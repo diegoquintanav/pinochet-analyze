@@ -11,6 +11,8 @@ from graphene import (
 
 from project.api.models import Victim, Perpetrator, Location, ViolentEvent
 
+from datetime import date
+
 
 class VictimSchema(ObjectType):
     individual_id = Int()
@@ -71,6 +73,49 @@ class ViolentEventSchema(ObjectType):
     locations = List(LocationSchema)
 
     # TODO: firstlocation, lastlocation,
+    def resolve_start_date_daily(self, info):
+        # graphene does not support neotime.Date objects
+        try:
+            return date(
+                self.start_date_daily.year,
+                self.start_date_daily.month,
+                self.start_date_daily.day,
+            )
+        except Exception as e:
+            return None
+
+    def resolve_end_date_daily(self, info):
+        # graphene does not support neotime.Date objects
+        try:
+            return date(
+                self.end_date_daily.year,
+                self.end_date_daily.month,
+                self.end_date_daily.day,
+            )
+        except Exception as e:
+            return None
+
+    def resolve_start_date_monthly(self, info):
+        # graphene does not support neotime.Date objects
+        try:
+            return date(
+                self.start_date_monthly.year,
+                self.start_date_monthly.month,
+                self.start_date_monthly.day,
+            )
+        except Exception as e:
+            return None
+
+    def resolve_end_date_monthly(self, info):
+        # graphene does not support neotime.Date objects
+        try:
+            return date(
+                self.end_date_monthly.year,
+                self.end_date_monthly.month,
+                self.end_date_monthly.day,
+            )
+        except Exception as e:
+            return None
 
     def resolve_victims(self, info):
         return None
@@ -139,27 +184,3 @@ class Query(ObjectType):
 
 
 schema = Schema(query=Query, auto_camelcase=False)
-
-
-if __name__ == "__main__":
-    from graphene.test import Client
-
-    client = Client(schema)
-    executed = client.execute(
-        """{
-  locations(location_description: ".*[l]igua.*") {
-    location_id
-  }
-}
-"""
-    )
-
-    "33ee2cf0c2206455ec1587603640c8be"
-    "86db8a4b16145fff63c313eb36c3ae66"
-    "1fedbe9fe3cd9884ae6457ec660d4311"  # ligua
-    assert executed == {
-        "data": {
-            "locations": [{"location_id": "1fedbe9fe3cd9884ae6457ec660d4311"}]
-        }
-    }
-

@@ -1,8 +1,8 @@
 import csv
 import hashlib
-import time
 import typing as T
 import uuid
+from datetime import datetime
 from pathlib import Path
 
 from flask import current_app
@@ -16,7 +16,7 @@ from project.api.models import (
     graph,
 )
 
-from ..api.utils import to_md5
+from ..api.utils import to_isoformat, to_md5
 
 
 def clear_graph(dry_run=False):

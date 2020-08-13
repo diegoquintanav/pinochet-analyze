@@ -5,7 +5,13 @@ from flask import Flask, jsonify
 from flask_graphql import GraphQLView
 
 from project.api.schemas import schema
-from project.api.models import graph, Victim, ViolentEvent, Location, Perpetrator
+from project.api.models import (
+    graph,
+    Victim,
+    ViolentEvent,
+    Location,
+    Perpetrator,
+)
 
 # resolve what configuration will be used
 config_dispatcher = {
@@ -25,15 +31,19 @@ def create_app():
     configure_app(app, os.environ.get("FLASK_ENV", "default"))
     print("app.debug inside create_app")
     print(app.debug)
-    app.add_url_rule('/graphql',
-                     view_func=GraphQLView.as_view('graphql',
-                                                   schema=schema,
-                                                   graphiql=True)
-                     )
+    app.add_url_rule(
+        "/graphql",
+        view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True),
+    )
 
     @app.errorhandler(404)
     def page_not_found(e):
-        return jsonify({'message': 'The requested URL was not found on the server.'}), 404
+        return (
+            jsonify(
+                {"message": "The requested URL was not found on the server."}
+            ),
+            404,
+        )
 
     # set up extensions here
 
@@ -42,7 +52,14 @@ def create_app():
     # shell context for flask cli
     @app.shell_context_processor
     def ctx():
-        return {"app": app, "graph": graph, "Victim": Victim, "ViolentEvent": ViolentEvent, "Location": Location, "Perpetrator": Perpetrator}
+        return {
+            "app": app,
+            "graph": graph,
+            "Victim": Victim,
+            "ViolentEvent": ViolentEvent,
+            "Location": Location,
+            "Perpetrator": Perpetrator,
+        }
 
     return app
 
