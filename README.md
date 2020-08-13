@@ -18,10 +18,19 @@ A repository for exploring the pinochet dataset [freire2019pinochet] and hopeful
 
 ![neo4j-graph](docs/figures/neo4j-graph.png)
 
+The graph _schema_ or shape is
+
+![graph-shape](docs/figures/graph_shape.png)
+
 ### Browsing the graphQL endpoint (WIP)
 
-1. same as before, endpoint is available at <http://localhost:5000/graphql>
+Endpoint is available at <http://localhost:5000/graphql>
+![graphql](docs/figures/graphql.png)
 
 ### Browsing the leaflet map (WIP)
 
-1. Same as before, access <http://localhost:8080/>
+Go to <http://localhost:8080/>
+
+![leafletmap](docs/figures/leaflet.png)
+
+Note that this map is not consuming the graphql schema yet.
