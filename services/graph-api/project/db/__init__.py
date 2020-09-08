@@ -6,7 +6,6 @@ from datetime import datetime
 from pathlib import Path
 
 from flask import current_app
-from progress.bar import IncrementalBar
 
 from project.api.models import (
     Location,
@@ -39,14 +38,8 @@ def get_locations(row: dict) -> T.List[Location]:
 
     # there are 6 locations max in the dataset. We will fetch those that are not empty
     for n in range(1, 7):
-        location_name = (
-            row.get(f"location_{n}", None)
-            or row.get(f"start_location_{n}", None)
-            or row.get(f"end_location_{n}", None)
-        )
-
+        location_name = row.get(f"location_{n}", None)
         if location_name is not None and location_name != "NA":
-
             loc_mapping = {
                 "exact_location": row[f"exact_coordinates_{n}"],
                 "location": location_name,
@@ -67,10 +60,6 @@ def get_locations(row: dict) -> T.List[Location]:
 def seed_graph(filepath, **kwargs):
 
     dry_run = kwargs.pop("dry_run", False)
-
-    # we know this number counting the rows before
-    # with wc -l pinochet.csv
-    bar = IncrementalBar("Insertions", max=2398)
 
     with open(filepath) as fp:
         csv_reader = csv.DictReader(f=fp)
@@ -111,7 +100,7 @@ def seed_graph(filepath, **kwargs):
             max_n = len(locations)
 
             event = ViolentEvent(
-                event_id=uuid.uuid4(),  # pk
+                event_id=str(uuid.uuid4()),  # pk
                 violence=row["violence"],
                 method=row["method"],
                 interrogation=row["interrogation"],
@@ -131,9 +120,9 @@ def seed_graph(filepath, **kwargs):
                 event.first_location.add(locations[0])
                 event.last_location.add(locations[-1])
                 for index, location in enumerate(locations):
+                    event.in_location.add(location)
                     if index != 0:
                         locations[index - 1].next_location.add(location)
-                    location.in_violent_events.add(event)
 
             victim.victim_of.add(event)
             perp.perpetrator_of.add(event)
@@ -146,9 +135,5 @@ def seed_graph(filepath, **kwargs):
             for location in locations:
                 __create_node(location, dry_run)
 
-            # increment progress bar
-            bar.next()
-
     status = "Success"
-    bar.finish()
     return status

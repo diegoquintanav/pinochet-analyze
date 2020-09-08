@@ -27,37 +27,6 @@ graph = Graph(
 DATE_FORMAT = "%Y-%m-%d"
 
 
-class CustomProperty(Property):
-    """Implements a datatype
-    
-    See https://github.com/technige/py2neo/issues/830 for details
-    """
-
-    def __init__(self, **kwargs):
-        """I know already that this is ugly, sorry
-        """
-        dtype = kwargs.pop("dtype")
-        if dtype is not None:
-            self.dtype = dtype
-
-        self.date_format = kwargs.pop("format", DATE_FORMAT)
-        super().__init__(**kwargs)
-
-    def __set__(self, instance, value):
-        if hasattr(self, "dtype"):
-            try:
-                if self.dtype == datetime.strptime:
-                    instance.__node__[self.key] = datetime.strptime(
-                        value, self.date_format
-                    )
-                else:
-                    instance.__node__[self.key] = self.dtype(value)
-            except ValueError:
-                current_app.logger.error(
-                    f"Could not convert {value}", exc_info=True
-                )
-
-
 class BaseModel(GraphObject):
     """
     Implements some basic functions to guarantee some standard functionality
@@ -105,19 +74,19 @@ class Victim(BaseModel):
     __primarykey__ = "individual_id"
 
     # from data
-    individual_id = CustomProperty(dtype=int)
-    group_id = CustomProperty(dtype=int)
-    first_name = CustomProperty(dtype=str)
-    last_name = CustomProperty(dtype=str)
-    age = CustomProperty(dtype=str)
-    minor = CustomProperty(dtype=bool)
-    male = CustomProperty(dtype=bool)
-    number_previous_arrests = CustomProperty(dtype=str)
-    occupation = CustomProperty(dtype=str)
-    occupation_detail = CustomProperty(dtype=str)
-    victim_affiliation = CustomProperty(dtype=str)
-    victim_affiliation_detail = CustomProperty(dtype=str)
-    targeted = CustomProperty(dtype=str)
+    individual_id = Property()
+    group_id = Property()
+    first_name = Property()
+    last_name = Property()
+    age = Property()
+    minor = Property()
+    male = Property()
+    number_previous_arrests = Property()
+    occupation = Property()
+    occupation_detail = Property()
+    victim_affiliation = Property()
+    victim_affiliation_detail = Property()
+    targeted = Property()
 
     victim_of = RelatedTo("ViolentEvent", "VICTIM_OF")
 
@@ -126,10 +95,10 @@ class Perpetrator(BaseModel):
 
     __primarykey__ = "perpetrator_id"
 
-    perpetrator_id = CustomProperty(dtype=str)
-    perpetrator_affiliation = CustomProperty(dtype=str)
-    perpetrator_affiliation_detail = CustomProperty(dtype=str)
-    war_tribunal = CustomProperty(dtype=bool)
+    perpetrator_id = Property()
+    perpetrator_affiliation = Property()
+    perpetrator_affiliation_detail = Property()
+    war_tribunal = Property()
 
     perpetrator_of = RelatedTo("ViolentEvent", "PERPETRATOR_OF")
 
@@ -147,13 +116,13 @@ class Location(BaseModel):
 
     __primarykey__ = "location_id"
 
-    location_id = CustomProperty(dtype=str)
-    exact_coordinates = CustomProperty(dtype=bool)
-    location = CustomProperty(dtype=str)
-    place = CustomProperty(dtype=str)
-    location_order = CustomProperty(dtype=str)
-    latitude = CustomProperty(dtype=str)
-    longitude = CustomProperty(dtype=str)
+    location_id = Property()
+    exact_coordinates = Property()
+    location = Property()
+    place = Property()
+    location_order = Property()
+    latitude = Property()
+    longitude = Property()
 
     next_location = RelatedTo("Location", "NEXT_LOCATION")
 
@@ -179,27 +148,19 @@ class ViolentEvent(BaseModel):
 
     __primarykey__ = "event_id"
 
-    event_id = CustomProperty(dtype=str)
-    violence = CustomProperty(dtype=str)
-    method = CustomProperty(dtype=str)
-    interrogation = CustomProperty(dtype=bool)
-    torture = CustomProperty(dtype=bool)
-    mistreatment = CustomProperty(dtype=bool)
-    press = CustomProperty(dtype=bool)
-    start_date_daily = CustomProperty(
-        dtype=datetime.strptime, format=DATE_FORMAT
-    )
-    end_date_daily = CustomProperty(
-        dtype=datetime.strptime, format=DATE_FORMAT
-    )
-    start_date_monthly = CustomProperty(
-        dtype=datetime.strptime, format=DATE_FORMAT
-    )
-    end_date_monthly = CustomProperty(
-        dtype=datetime.strptime, format=DATE_FORMAT
-    )
-    page = CustomProperty(dtype=str)
-    additional_comments = CustomProperty(dtype=str)
+    event_id = Property()
+    violence = Property()
+    method = Property()
+    interrogation = Property()
+    torture = Property()
+    mistreatment = Property()
+    press = Property()
+    start_date_daily = Property()
+    end_date_daily = Property()
+    start_date_monthly = Property()
+    end_date_monthly = Property()
+    page = Property()
+    additional_comments = Property()
 
     # outgoing relationships
     first_location = RelatedTo("Location", "FIRST_LOCATION")
