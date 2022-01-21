@@ -1,7 +1,7 @@
 black==19.3b0
 folium==0.10.0
 geopandas==0.5.1
-ipython==7.8.0
+ipython==7.16.3
 jupyter==1.0.0
 jupyter-client==5.3.3
 jupyter-console==6.0.0
