@@ -11,5 +11,5 @@ jupyter-core==4.5.0
 jupyter-highlight-selected-word==0.2.0
 jupyter-latex-envs==1.4.6
 jupyter-nbextensions-configurator==0.4.1
-numpy==1.17.2
+numpy==1.22.0
 pandas==0.25.1
