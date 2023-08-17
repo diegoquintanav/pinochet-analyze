@@ -1,16 +1,45 @@
-[tool.black]
-line-length = 79
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
+[tool.poetry]
+name = "pinochet-analyze"
+version = "0.1.1"
+description = "Utilities for analyzing the pinochet dataset"
+authors = ["Diego Quintana <daquintanav@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "pinochet_analyze"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pandas = "^2.0.3"
+numpy = "^1.25.2"
+folium = "^0.14.0"
+geopandas = "^0.13.2"
+py2neo = "^2021.2.3"
+flask = "^2.3.2"
+neo4j = "^5.11.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+isort = "^5.12.0"
+pre-commit = "^3.3.3"
+ruff = "^0.0.284"
+ipykernel = "^6.25.1"
+pytest = "^7.4.0"
+coverage = "^7.3.0"
+git-changelog = "^2.1.0"
+flake8 = "^6.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[[tool.poetry_bumpversion.replacements]]
+files = ["pinochet_analyze/__init__.py"]
+replace = '__version__ = "{new_version}"'
+search = '__version__ = "{current_version}"'
+
+[[tool.poetry_bumpversion.replacements]]
+files = ["VERSION"]
+replace = '{new_version}'
+search = '{current_version}'

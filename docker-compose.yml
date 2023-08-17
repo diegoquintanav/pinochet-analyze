@@ -4,12 +4,12 @@ services:
   maps:
     # served as a static file with https://hub.docker.com/_/nginx/
     build:
-      context: .
+      context: services/maps/
       dockerfile: Dockerfile
-    image: pinochet-maps:latest
+    image: ghcr.io/diegoquintanav/pinochet-analyze/pinochet-maps:latest
     restart: always
     ports:
-      - "80:80"
+      - 80:80
     networks:
       - maps_nw
 

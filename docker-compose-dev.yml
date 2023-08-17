@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     volumes:
-      - "./services/graph-api:/usr/src/app"
+      - ./services/graph-api:/usr/src/app
     ports:
       - 5000:5000
     environment:
